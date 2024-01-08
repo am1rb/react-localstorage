@@ -61,8 +61,8 @@ function createTestData<Schema extends z.ZodTypeAny>({
       schema,
       transformDecodedValue: value => value,
       storage: {
-        getItem: jest.fn(),
-        setItem: jest.fn(),
+        getItem: jest.fn(() => null),
+        setItem: jest.fn(() => {}),
         removeItem: jest.fn(),
       },
       logger: {
@@ -72,6 +72,8 @@ function createTestData<Schema extends z.ZodTypeAny>({
         decodeError: failurePolicy,
         encodeError: failurePolicy,
         schemaCheck: failurePolicy,
+        readError: failurePolicy,
+        writeError: failurePolicy,
       },
     },
   };

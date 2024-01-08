@@ -18,5 +18,7 @@ export interface Options<Schema extends z.ZodTypeAny> {
     decodeError: FailurePolicy;
     encodeError: FailurePolicy;
     schemaCheck: FailurePolicy;
+    readError: FailurePolicy;
+    writeError: FailurePolicy;
   };
 }
