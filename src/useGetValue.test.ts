@@ -3,6 +3,9 @@ import { FailurePolicy } from './types/FailurePolicy';
 import { readValue, safeReadValue, useGetValue } from './useGetValue';
 
 import { SAMPLE_KEY, getTestData } from './utils/getTestData';
+import { eventEmitter } from './utils/eventEmitter';
+
+afterEach(() => eventEmitter.clear());
 
 describe('useGetValue', () => {
   it.skip('returns null during SSR phase', () => {
@@ -40,6 +43,34 @@ describe('useGetValue', () => {
       isReady: true,
       value: testData.storedValue.ok,
     });
+  });
+
+  it('sets up an event handler in eventEmitter', () => {
+    const testData = getTestData();
+
+    const mockGetItem = jest.fn<string | null, never>(() => null);
+
+    const { unmount, result } = renderHook(() =>
+      useGetValue(SAMPLE_KEY, {
+        ...testData.options,
+        storage: { ...testData.options.storage, getItem: mockGetItem },
+      })
+    );
+
+    expect(eventEmitter.size()).toBe(1);
+
+    mockGetItem.mockReturnValue(testData.storedValue.ok);
+
+    act(() => eventEmitter.emit(SAMPLE_KEY));
+
+    expect(result.current).toEqual({
+      isReady: true,
+      value: testData.storedValue.ok,
+    });
+
+    unmount();
+
+    expect(eventEmitter.size()).toBe(0);
   });
 });
 

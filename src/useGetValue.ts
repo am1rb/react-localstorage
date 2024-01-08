@@ -5,6 +5,7 @@ import { handleFailure } from './utils/handleFailure';
 import { ReadStorageError } from './errors/ReadStorageError';
 import { storageSchema } from './utils/storageSchema';
 import { SchemaCheckError } from './errors/SchemaCheckError';
+import { eventEmitter } from './utils/eventEmitter';
 
 type GetValue =
   | {
@@ -29,7 +30,11 @@ export function useGetValue<Schema extends z.ZodTypeAny>(
       };
 
       window.addEventListener('storage', handleStorageEvent);
-      return () => window.removeEventListener('storage', handleStorageEvent);
+      eventEmitter.on(key, handleStorageEvent);
+      return () => {
+        window.removeEventListener('storage', handleStorageEvent);
+        eventEmitter.off(key, handleStorageEvent);
+      };
     },
     [key]
   );
