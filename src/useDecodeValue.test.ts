@@ -21,7 +21,10 @@ describe('useDecodeValue', () => {
     expect(result.current).toBe(initialDecodedValue);
 
     rerender({
-      rawValue: testData.options.encoder({ id: 2, label: 'new value' }),
+      rawValue: testData.options.serializer.encode({
+        id: 2,
+        label: 'new value',
+      }),
     });
 
     expect(result.current).not.toBe(initialDecodedValue);

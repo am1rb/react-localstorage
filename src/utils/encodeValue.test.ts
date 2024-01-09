@@ -43,7 +43,10 @@ describe('getEncodedValue', () => {
     expect(
       getEncodedValue(SAMPLE_KEY, testData.value, {
         ...testData.options,
-        encoder: mockEncoder,
+        serializer: {
+          ...testData.options.serializer,
+          encode: mockEncoder,
+        },
       })
     ).toBe(testData.storedValue.ok);
 
@@ -61,7 +64,10 @@ describe('getEncodedValue', () => {
     expect(() =>
       getEncodedValue(SAMPLE_KEY, testData.value, {
         ...testData.options,
-        encoder: mockEncoder,
+        serializer: {
+          ...testData.options.serializer,
+          encode: mockEncoder,
+        },
       })
     ).toThrowError(`Failed to encode value for ${SAMPLE_KEY}`);
   });
@@ -79,7 +85,10 @@ describe('getEncodedValue', () => {
       expect(
         getEncodedValue(SAMPLE_KEY, testData.value, {
           ...testData.options,
-          encoder: mockEncoder,
+          serializer: {
+            ...testData.options.serializer,
+            encode: mockEncoder,
+          },
         })
       ).toBeNull();
 

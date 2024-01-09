@@ -39,8 +39,8 @@ interface TestData<Schema extends z.ZodTypeAny> {
   options: Options<Schema>;
 }
 
-const encoder = JSON.stringify;
-const decoder = JSON.parse;
+const encode = JSON.stringify;
+const decode = JSON.parse;
 
 function createTestData<Schema extends z.ZodTypeAny>({
   schema,
@@ -51,19 +51,21 @@ function createTestData<Schema extends z.ZodTypeAny>({
     defaultValue: getDefaultValue(schema),
     value,
     storedValue: {
-      ok: encoder(value),
+      ok: encode(value),
       decoderIncompatible: 'something incompatible with what decoder expects',
-      schemaIncompatible: encoder(true),
+      schemaIncompatible: encode(true),
     },
     options: {
-      decoder,
-      encoder,
       schema,
       transformDecodedValue: value => value,
       storage: {
         getItem: jest.fn(() => null),
         setItem: jest.fn(() => {}),
         removeItem: jest.fn(),
+      },
+      serializer: {
+        decode,
+        encode,
       },
       logger: {
         error: jest.fn(),

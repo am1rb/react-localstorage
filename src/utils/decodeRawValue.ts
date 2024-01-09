@@ -44,10 +44,10 @@ export function decodeRawValue<Schema extends z.ZodTypeAny>(
 function getDecodedValue<Schema extends z.ZodTypeAny>(
   key: string,
   rawValue: string,
-  { decoder, failurePolicy, logger }: Options<Schema>
+  { serializer, failurePolicy, logger }: Options<Schema>
 ): z.infer<Schema> | undefined {
   try {
-    return decoder(rawValue);
+    return serializer.decode(rawValue);
   } catch (error) {
     handleFailure(failurePolicy.decodeError, {
       error: () =>

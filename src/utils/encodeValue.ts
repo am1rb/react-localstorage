@@ -29,10 +29,10 @@ export function encodeValue<Schema extends z.ZodTypeAny>(
 export function getEncodedValue<Schema extends z.ZodTypeAny>(
   key: string,
   value: z.infer<Schema>,
-  { encoder, failurePolicy, logger }: Options<Schema>
+  { serializer, failurePolicy, logger }: Options<Schema>
 ): string | null {
   try {
-    return encoder(value);
+    return serializer.encode(value);
   } catch (error) {
     handleFailure(failurePolicy.encodeError, {
       error: () =>

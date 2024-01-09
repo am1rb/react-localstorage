@@ -2,14 +2,16 @@ import { z } from 'zod';
 import { FailurePolicy } from './FailurePolicy';
 
 export interface Options<Schema extends z.ZodTypeAny> {
-  decoder: (value: string) => z.infer<Schema>;
-  encoder: (value: z.infer<Schema>) => string;
   schema: Schema;
   transformDecodedValue: (decodedValue: unknown) => z.infer<Schema>;
   storage: {
     getItem(key: string): string | null;
     setItem(key: string, value: string): void;
     removeItem(key: string): void;
+  };
+  serializer: {
+    decode: (value: string) => z.infer<Schema>;
+    encode: (value: z.infer<Schema>) => string;
   };
   logger: {
     error: typeof console.error;
