@@ -61,7 +61,7 @@ export function useGetValue<Schema extends z.ZodTypeAny>(
 export function safeReadValue<Schema extends z.ZodTypeAny>(
   key: string,
   options: Options<Schema>
-) {
+): string | null {
   const storedValue = readValue(key, options);
 
   const schemaCheck = storageSchema.getItem.safeParse(storedValue);
