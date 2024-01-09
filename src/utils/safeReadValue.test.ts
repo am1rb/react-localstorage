@@ -21,7 +21,7 @@ describe('safeReadValue', () => {
     );
   });
 
-  it('returns null if if storage.getItem returns invalid data type and failure policy is not exception', () => {
+  it('returns null if storage.getItem returns invalid data type and failure policy is not exception', () => {
     const failurePolicies: FailurePolicy[] = ['error', 'ignore'];
 
     failurePolicies.forEach(failurePolicy => {
@@ -38,7 +38,9 @@ describe('safeReadValue', () => {
       ).toBeNull();
 
       if (failurePolicy === 'error') {
-        expect(testData.options.logger.error).toHaveBeenCalled();
+        expect(testData.options.logger.error).toHaveBeenCalledWith(
+          `The storage.getItem must return a string or null; but returned undefined for ${SAMPLE_KEY}`
+        );
       }
     });
   });
@@ -94,7 +96,11 @@ describe('readValue', () => {
       ).toBeNull();
 
       if (failurePolicy === 'error') {
-        expect(testData.options.logger.error).toHaveBeenCalled();
+        expect(testData.options.logger.error).toHaveBeenCalledWith(
+          'Failed to read from storage for %s\n%o',
+          SAMPLE_KEY,
+          expect.anything()
+        );
       }
     });
   });
