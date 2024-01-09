@@ -2,8 +2,6 @@ import { z } from 'zod';
 import { Options } from '../types/Options';
 import { storageSchema } from './storageSchema';
 import { handleFailure } from './handleFailure';
-import { SchemaCheckError } from '../errors/SchemaCheckError';
-import { WriteStorageError } from '../errors/WriteStorageError';
 
 export function safeWriteValue<Schema extends z.ZodTypeAny>(
   key: string,
@@ -23,7 +21,7 @@ export function safeWriteValue<Schema extends z.ZodTypeAny>(
         `The storage.setItem expects an string; but got ${typeof value} for ${key}`
       ),
     exception: () => {
-      throw new SchemaCheckError(
+      throw new Error(
         `The storage.setItem expects an string; but got ${typeof value} for ${key}`
       );
     },
@@ -42,7 +40,7 @@ export function writeValue<Schema extends z.ZodTypeAny>(
       error: () =>
         logger.error('Failed to write to storage for %s\n%o', key, error),
       exception: () => {
-        throw new WriteStorageError(`Failed to write to storage for ${key}`);
+        throw new Error(`Failed to write to storage for ${key}`);
       },
     });
   }

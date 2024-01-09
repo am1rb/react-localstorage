@@ -2,8 +2,6 @@ import { z } from 'zod';
 import { Options } from '../types/Options';
 import { storageSchema } from './storageSchema';
 import { handleFailure } from './handleFailure';
-import { SchemaCheckError } from '../errors/SchemaCheckError';
-import { ReadStorageError } from '../errors/ReadStorageError';
 
 export function safeReadValue<Schema extends z.ZodTypeAny>(
   key: string,
@@ -22,7 +20,7 @@ export function safeReadValue<Schema extends z.ZodTypeAny>(
         `The storage.getItem must return a string or null; but returned ${typeof storedValue} for ${key}`
       ),
     exception: () => {
-      throw new SchemaCheckError(
+      throw new Error(
         `The storage.getItem must return a string or null; but returned ${typeof storedValue} for ${key}`
       );
     },
@@ -42,7 +40,7 @@ export function readValue<Schema extends z.ZodTypeAny>(
       error: () =>
         logger.error('Failed to read from storage for %s\n%o', key, error),
       exception: () => {
-        throw new ReadStorageError(`Failed to read from storage for ${key}`);
+        throw new Error(`Failed to read from storage for ${key}`);
       },
     });
   }

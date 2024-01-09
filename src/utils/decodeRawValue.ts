@@ -1,8 +1,6 @@
 import { z } from 'zod';
 import { Options } from '../types/Options';
 import { handleFailure } from './handleFailure';
-import { SchemaCheckError } from '../errors/SchemaCheckError';
-import { DecodeDataError } from '../errors/DecodeDataError';
 import { getDefaultValue } from './getDefaultValue';
 
 export function decodeRawValue<Schema extends z.ZodTypeAny>(
@@ -34,7 +32,7 @@ export function decodeRawValue<Schema extends z.ZodTypeAny>(
         `The stored data format does not match schema for ${key}`
       ),
     exception: () => {
-      throw new SchemaCheckError(
+      throw new Error(
         `The stored data format does not match schema for ${key}`
       );
     },
@@ -55,7 +53,7 @@ function getDecodedValue<Schema extends z.ZodTypeAny>(
       error: () =>
         logger.error('Failed to decode raw value for %s\n%o', key, error),
       exception: () => {
-        throw new DecodeDataError(`Failed to decode raw value for ${key}`);
+        throw new Error(`Failed to decode raw value for ${key}`);
       },
     });
   }

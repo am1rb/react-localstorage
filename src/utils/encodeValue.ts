@@ -1,8 +1,6 @@
 import { z } from 'zod';
 import { Options } from '../types/Options';
 import { handleFailure } from './handleFailure';
-import { EncodeDataError } from '../errors/EncodeDataError';
-import { SchemaCheckError } from '../errors/SchemaCheckError';
 
 export function encodeValue<Schema extends z.ZodTypeAny>(
   key: string,
@@ -21,9 +19,7 @@ export function encodeValue<Schema extends z.ZodTypeAny>(
         `The value\'s format does not match schema for ${key}`
       ),
     exception: () => {
-      throw new SchemaCheckError(
-        `The value\'s format does not match schema for ${key}`
-      );
+      throw new Error(`The value\'s format does not match schema for ${key}`);
     },
   });
 
@@ -42,7 +38,7 @@ export function getEncodedValue<Schema extends z.ZodTypeAny>(
       error: () =>
         logger.error('Failed to encode value for %s\n%o', key, error),
       exception: () => {
-        throw new EncodeDataError(`Failed to encode value for ${key}`);
+        throw new Error(`Failed to encode value for ${key}`);
       },
     });
   }
