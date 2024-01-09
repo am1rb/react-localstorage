@@ -1,6 +1,5 @@
 import { z } from 'zod';
 import { Options } from '../types/Options';
-import { storageSchema } from './storageSchema';
 import { handleFailure } from './handleFailure';
 
 export function safeWriteValue<Schema extends z.ZodTypeAny>(
@@ -8,9 +7,7 @@ export function safeWriteValue<Schema extends z.ZodTypeAny>(
   value: string,
   options: Options<Schema>
 ): void {
-  const schemaCheck = storageSchema.setItem.safeParse(value);
-
-  if (schemaCheck.success) {
+  if (typeof value === 'string') {
     writeValue(key, value, options);
     return;
   }

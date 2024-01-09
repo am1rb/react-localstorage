@@ -1,6 +1,5 @@
 import { z } from 'zod';
 import { Options } from '../types/Options';
-import { storageSchema } from './storageSchema';
 import { handleFailure } from './handleFailure';
 
 export function safeReadValue<Schema extends z.ZodTypeAny>(
@@ -9,8 +8,7 @@ export function safeReadValue<Schema extends z.ZodTypeAny>(
 ): string | null {
   const storedValue = readValue(key, options);
 
-  const schemaCheck = storageSchema.getItem.safeParse(storedValue);
-  if (schemaCheck.success) {
+  if (storedValue === null || typeof storedValue === 'string') {
     return storedValue;
   }
 
