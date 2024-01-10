@@ -1,0 +1,36 @@
+import * as React from 'react';
+import { z } from 'zod';
+import { Options } from './types/Options';
+import { handleFailure } from './utils/handleFailure';
+import { eventEmitter } from './utils/eventEmitter';
+
+export function useRemoveValue<Schema extends z.ZodTypeAny>(
+  key: string,
+  options: Options<Schema>
+): () => void {
+  return React.useCallback(() => {
+    if (removeValue(key, options)) {
+      eventEmitter.emit(key);
+    }
+  }, [key]);
+}
+
+export function removeValue<Schema extends z.ZodTypeAny>(
+  key: string,
+  { storage, logger, failurePolicy }: Options<Schema>
+): boolean {
+  try {
+    storage.removeItem(key);
+    return true;
+  } catch (error) {
+    handleFailure(failurePolicy.removeError, {
+      error: () =>
+        logger.error('Failed to remove from storage for %s\n%o', key, error),
+      exception: () => {
+        throw new Error(`Failed to remove from storage for ${key}`);
+      },
+    });
+  }
+
+  return false;
+}
