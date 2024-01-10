@@ -70,22 +70,6 @@ describe('useSetValue', () => {
       })
     );
   });
-
-  it('notifies other listeners after updating storage', () => {
-    const mockCallback = jest.fn();
-
-    eventEmitter.on(SAMPLE_KEY, mockCallback);
-
-    const testData = getTestData();
-
-    const { result } = renderHook(() =>
-      useSetValue(SAMPLE_KEY, testData.value, testData.options)
-    );
-
-    result.current({ id: 20, label: 'John' });
-
-    expect(mockCallback).toHaveBeenCalled();
-  });
 });
 
 describe('setValue', () => {
@@ -105,6 +89,10 @@ describe('setValue', () => {
   });
 
   it('does not try to put data in storage if encoder could not encode it', () => {
+    const mockCallback = jest.fn();
+
+    eventEmitter.on(SAMPLE_KEY, mockCallback);
+
     const testData = getTestData({ failurePolicy: 'error' });
 
     const mockSetItem = jest.fn();
@@ -120,9 +108,14 @@ describe('setValue', () => {
     });
 
     expect(mockSetItem).not.toHaveBeenCalled();
+    expect(mockCallback).not.toHaveBeenCalled();
   });
 
   it("should not save it if value's format does not match the schema", () => {
+    const mockCallback = jest.fn();
+
+    eventEmitter.on(SAMPLE_KEY, mockCallback);
+
     const testData = getTestData({ failurePolicy: 'error' });
 
     const mockSetItem = jest.fn();
@@ -132,5 +125,18 @@ describe('setValue', () => {
     });
 
     expect(mockSetItem).not.toHaveBeenCalled();
+    expect(mockCallback).not.toHaveBeenCalled();
+  });
+
+  it('notifies other listeners after updating storage', () => {
+    const mockCallback = jest.fn();
+
+    eventEmitter.on(SAMPLE_KEY, mockCallback);
+
+    const testData = getTestData();
+
+    setValue(SAMPLE_KEY, testData.value, testData.options);
+
+    expect(mockCallback).toHaveBeenCalled();
   });
 });

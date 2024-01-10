@@ -21,8 +21,6 @@ export function useSetValue<Schema extends z.ZodTypeAny>(
       } else {
         setValue(key, newValue, options);
       }
-
-      eventEmitter.emit(key);
     },
     [key] // FIXME: check dependency warnings
   );
@@ -40,6 +38,7 @@ export function setValue<Schema extends z.ZodTypeAny>(
   }
 
   safeWriteValue(key, encodedValue, options);
+  eventEmitter.emit(key);
 }
 
 function isFunction(value: unknown): value is Function {
