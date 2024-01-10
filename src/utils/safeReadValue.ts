@@ -12,17 +12,11 @@ export function safeReadValue<Schema extends z.ZodTypeAny>(
     return storedValue;
   }
 
-  handleFailure(options.failurePolicy.schemaCheck, {
-    error: () =>
-      options.logger.error(
-        `The storage.getItem must return a string or null; but returned ${typeof storedValue} for ${key}`
-      ),
-    exception: () => {
-      throw new Error(
-        `The storage.getItem must return a string or null; but returned ${typeof storedValue} for ${key}`
-      );
-    },
-  });
+  handleFailure(
+    options.failurePolicy.schemaCheck,
+    options.logger,
+    `The storage.getItem must return a string or null; but returned ${typeof storedValue} for ${key}.`
+  );
 
   return null;
 }
@@ -34,13 +28,12 @@ export function readValue<Schema extends z.ZodTypeAny>(
   try {
     return storage.getItem(key);
   } catch (error) {
-    handleFailure(failurePolicy.readError, {
-      error: () =>
-        logger.error('Failed to read from storage for %s\n%o', key, error),
-      exception: () => {
-        throw new Error(`Failed to read from storage for ${key}`);
-      },
-    });
+    handleFailure(
+      failurePolicy.readError,
+      logger,
+      `Failed to read from storage for ${key}.`,
+      error
+    );
   }
 
   return null;

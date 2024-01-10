@@ -14,6 +14,7 @@ export interface Options<Schema extends z.ZodTypeAny> {
     encode: (value: z.infer<Schema>) => string;
   };
   logger: {
+    warn: typeof console.error;
     error: typeof console.error;
   };
   failurePolicy: {
@@ -22,5 +23,6 @@ export interface Options<Schema extends z.ZodTypeAny> {
     schemaCheck: FailurePolicy;
     readError: FailurePolicy;
     writeError: FailurePolicy;
+    removeError: FailurePolicy;
   };
 }

@@ -16,7 +16,7 @@ describe('encodeValue', () => {
   });
 
   it('returns null if the value format does not match and failure policy is not exception', () => {
-    const failurePolicies: FailurePolicy[] = ['error', 'ignore'];
+    const failurePolicies: FailurePolicy[] = ['error', 'ignore', 'warn'];
 
     failurePolicies.forEach(failurePolicy => {
       const testData = getTestData({ failurePolicy });
@@ -25,9 +25,9 @@ describe('encodeValue', () => {
         encodeValue(SAMPLE_KEY, undefined as any, testData.options)
       ).toBeNull();
 
-      if (failurePolicy === 'error') {
-        expect(testData.options.logger.error).toHaveBeenCalledWith(
-          `The value\'s format does not match schema for ${SAMPLE_KEY}`
+      if (failurePolicy === 'error' || failurePolicy === 'warn') {
+        expect(testData.options.logger[failurePolicy]).toHaveBeenCalledWith(
+          `The value\'s format does not match schema for ${SAMPLE_KEY}.`
         );
       }
     });
@@ -54,7 +54,7 @@ describe('getEncodedValue', () => {
   });
 
   it('throws an exception when encoder gets failed and failure policy is exception', () => {
-    const mockEncoder = jest.fn().mockImplementation(() => {
+    const mockEncoder = jest.fn(() => {
       throw new Error();
     });
 
@@ -73,10 +73,10 @@ describe('getEncodedValue', () => {
   });
 
   it('returns null when encoder gets failed and failure policy is not exception', () => {
-    const failurePolicies: FailurePolicy[] = ['ignore', 'error'];
+    const failurePolicies: FailurePolicy[] = ['ignore', 'error', 'warn'];
 
     failurePolicies.forEach(failurePolicy => {
-      const mockEncoder = jest.fn().mockImplementation(() => {
+      const mockEncoder = jest.fn(() => {
         throw new Error();
       });
 
@@ -92,10 +92,9 @@ describe('getEncodedValue', () => {
         })
       ).toBeNull();
 
-      if (failurePolicy === 'error') {
-        expect(testData.options.logger.error).toHaveBeenCalledWith(
-          'Failed to encode value for %s\n%o',
-          SAMPLE_KEY,
+      if (failurePolicy === 'error' || failurePolicy === 'warn') {
+        expect(testData.options.logger[failurePolicy]).toHaveBeenCalledWith(
+          `Failed to encode value for ${SAMPLE_KEY}.\n%o`,
           expect.anything()
         );
       }

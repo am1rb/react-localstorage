@@ -1,2 +1,2 @@
-export type FailureAction = 'error' | 'exception';
+export type FailureAction = 'warn' | 'error' | 'exception';
 export type FailurePolicy = FailureAction | 'ignore';

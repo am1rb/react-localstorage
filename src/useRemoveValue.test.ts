@@ -61,7 +61,7 @@ describe('removeValue', () => {
   });
 
   it('throws an exception when storage gets failed and failure policy is exception', () => {
-    const mockRemoveItem = jest.fn().mockImplementation(() => {
+    const mockRemoveItem = jest.fn(() => {
       throw new Error();
     });
 
@@ -77,10 +77,10 @@ describe('removeValue', () => {
   });
 
   it('logs an error or ignores the action when storage gets failed and failure policy is not exception', () => {
-    const failurePolicies: FailurePolicy[] = ['ignore', 'error'];
+    const failurePolicies: FailurePolicy[] = ['ignore', 'error', 'warn'];
 
     failurePolicies.forEach(failurePolicy => {
-      const mockRemoveItem = jest.fn().mockImplementation(() => {
+      const mockRemoveItem = jest.fn(() => {
         throw new Error();
       });
 
@@ -93,10 +93,9 @@ describe('removeValue', () => {
         })
       ).toBeFalsy();
 
-      if (failurePolicy === 'error') {
-        expect(testData.options.logger.error).toHaveBeenCalledWith(
-          'Failed to remove from storage for %s\n%o',
-          SAMPLE_KEY,
+      if (failurePolicy === 'error' || failurePolicy === 'warn') {
+        expect(testData.options.logger[failurePolicy]).toHaveBeenCalledWith(
+          `Failed to remove from storage for ${SAMPLE_KEY}.\n%o`,
           expect.anything()
         );
       }

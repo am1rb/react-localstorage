@@ -23,13 +23,12 @@ export function removeValue<Schema extends z.ZodTypeAny>(
     storage.removeItem(key);
     return true;
   } catch (error) {
-    handleFailure(failurePolicy.removeError, {
-      error: () =>
-        logger.error('Failed to remove from storage for %s\n%o', key, error),
-      exception: () => {
-        throw new Error(`Failed to remove from storage for ${key}`);
-      },
-    });
+    handleFailure(
+      failurePolicy.removeError,
+      logger,
+      `Failed to remove from storage for ${key}.`,
+      error
+    );
   }
 
   return false;

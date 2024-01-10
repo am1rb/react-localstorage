@@ -12,7 +12,7 @@ describe('with default value', () => {
   });
 
   it('returns default value when decoder failed to parse stored data and failure policy is not exception', () => {
-    const failurePolicies: FailurePolicy[] = ['error', 'ignore'];
+    const failurePolicies: FailurePolicy[] = ['error', 'ignore', 'warn'];
 
     failurePolicies.forEach(failurePolicy => {
       const testData = getTestData({ withDefaultValue: true, failurePolicy });
@@ -28,7 +28,7 @@ describe('with default value', () => {
   });
 
   it('returns default value if schema does not match and failure policy is not exception', () => {
-    const failurePolicies: FailurePolicy[] = ['error', 'ignore'];
+    const failurePolicies: FailurePolicy[] = ['error', 'ignore', 'warn'];
 
     failurePolicies.forEach(failurePolicy => {
       const testData = getTestData({ withDefaultValue: true, failurePolicy });
@@ -52,7 +52,7 @@ describe('without default value', () => {
   });
 
   it('returns undefined when decoder failed to parse stored data and failure policy is not exception', () => {
-    const failurePolicies: FailurePolicy[] = ['error', 'ignore'];
+    const failurePolicies: FailurePolicy[] = ['error', 'ignore', 'warn'];
 
     failurePolicies.forEach(failurePolicy => {
       const testData = getTestData({ withDefaultValue: false, failurePolicy });
@@ -68,7 +68,7 @@ describe('without default value', () => {
   });
 
   it('returns undefined if schema does not match and failure policy is not exception', () => {
-    const failurePolicies: FailurePolicy[] = ['error', 'ignore'];
+    const failurePolicies: FailurePolicy[] = ['error', 'ignore', 'warn'];
 
     failurePolicies.forEach(failurePolicy => {
       const testData = getTestData({ withDefaultValue: false, failurePolicy });

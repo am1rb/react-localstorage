@@ -17,12 +17,12 @@ describe('safeReadValue', () => {
         },
       })
     ).toThrowError(
-      `The storage.getItem must return a string or null; but returned undefined for ${SAMPLE_KEY}`
+      `The storage.getItem must return a string or null; but returned undefined for ${SAMPLE_KEY}.`
     );
   });
 
   it('returns null if storage.getItem returns invalid data type and failure policy is not exception', () => {
-    const failurePolicies: FailurePolicy[] = ['error', 'ignore'];
+    const failurePolicies: FailurePolicy[] = ['error', 'ignore', 'warn'];
 
     failurePolicies.forEach(failurePolicy => {
       const testData = getTestData({ failurePolicy });
@@ -37,9 +37,9 @@ describe('safeReadValue', () => {
         })
       ).toBeNull();
 
-      if (failurePolicy === 'error') {
-        expect(testData.options.logger.error).toHaveBeenCalledWith(
-          `The storage.getItem must return a string or null; but returned undefined for ${SAMPLE_KEY}`
+      if (failurePolicy === 'error' || failurePolicy === 'warn') {
+        expect(testData.options.logger[failurePolicy]).toHaveBeenCalledWith(
+          `The storage.getItem must return a string or null; but returned undefined for ${SAMPLE_KEY}.`
         );
       }
     });
@@ -63,7 +63,7 @@ describe('readValue', () => {
   });
 
   it('throws an exception when storage gets failed and failure policy is exception', () => {
-    const mockGetItem = jest.fn().mockImplementation(() => {
+    const mockGetItem = jest.fn(() => {
       throw new Error();
     });
 
@@ -75,14 +75,14 @@ describe('readValue', () => {
         ...testData.options,
         storage: { ...testData.options.storage, getItem: mockGetItem },
       })
-    ).toThrowError(`Failed to read from storage for ${SAMPLE_KEY}`);
+    ).toThrowError(`Failed to read from storage for ${SAMPLE_KEY}.`);
   });
 
   it('returns null when storage gets failed and failure policy is not exception', () => {
-    const failurePolicies: FailurePolicy[] = ['ignore', 'error'];
+    const failurePolicies: FailurePolicy[] = ['ignore', 'error', 'warn'];
 
     failurePolicies.forEach(failurePolicy => {
-      const mockGetItem = jest.fn().mockImplementation(() => {
+      const mockGetItem = jest.fn(() => {
         throw new Error();
       });
 
@@ -95,10 +95,9 @@ describe('readValue', () => {
         })
       ).toBeNull();
 
-      if (failurePolicy === 'error') {
-        expect(testData.options.logger.error).toHaveBeenCalledWith(
-          'Failed to read from storage for %s\n%o',
-          SAMPLE_KEY,
+      if (failurePolicy === 'error' || failurePolicy === 'warn') {
+        expect(testData.options.logger[failurePolicy]).toHaveBeenCalledWith(
+          `Failed to read from storage for ${SAMPLE_KEY}.\n%o`,
           expect.anything()
         );
       }

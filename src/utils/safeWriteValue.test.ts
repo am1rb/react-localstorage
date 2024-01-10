@@ -11,21 +11,21 @@ describe('safeWriteValue', () => {
     expect(() =>
       safeWriteValue(SAMPLE_KEY, undefined as any, testData.options)
     ).toThrowError(
-      `The storage.setItem expects an string; but got undefined for ${SAMPLE_KEY}`
+      `The storage.setItem expects an string; but got undefined for ${SAMPLE_KEY}.`
     );
   });
 
   it('logs an error or ignores the action when the value format does not match and failure policy is not exception', () => {
-    const failurePolicies: FailurePolicy[] = ['error', 'ignore'];
+    const failurePolicies: FailurePolicy[] = ['error', 'ignore', 'warn'];
 
     failurePolicies.forEach(failurePolicy => {
       const testData = getTestData({ failurePolicy });
 
       safeWriteValue(SAMPLE_KEY, undefined as any, testData.options);
 
-      if (failurePolicy === 'error') {
-        expect(testData.options.logger.error).toHaveBeenCalledWith(
-          `The storage.setItem expects an string; but got undefined for ${SAMPLE_KEY}`
+      if (failurePolicy === 'error' || failurePolicy === 'warn') {
+        expect(testData.options.logger[failurePolicy]).toHaveBeenCalledWith(
+          `The storage.setItem expects an string; but got undefined for ${SAMPLE_KEY}.`
         );
       }
     });
@@ -50,7 +50,7 @@ describe('writeValue', () => {
   });
 
   it('throws an exception when storage gets failed and failure policy is exception', () => {
-    const mockSetItem = jest.fn().mockImplementation(() => {
+    const mockSetItem = jest.fn(() => {
       throw new Error();
     });
 
@@ -62,14 +62,14 @@ describe('writeValue', () => {
         ...testData.options,
         storage: { ...testData.options.storage, setItem: mockSetItem },
       })
-    ).toThrowError(`Failed to write to storage for ${SAMPLE_KEY}`);
+    ).toThrowError(`Failed to write to storage for ${SAMPLE_KEY}.`);
   });
 
-  it('logs an error or ignores the action when storage gets failed and failure policy is not exception', () => {
-    const failurePolicies: FailurePolicy[] = ['ignore', 'error'];
+  it('logs an error/warning or ignores the action when storage gets failed and failure policy is not exception', () => {
+    const failurePolicies: FailurePolicy[] = ['ignore', 'error', 'warn'];
 
     failurePolicies.forEach(failurePolicy => {
-      const mockSetItem = jest.fn().mockImplementation(() => {
+      const mockSetItem = jest.fn(() => {
         throw new Error();
       });
 
@@ -80,10 +80,9 @@ describe('writeValue', () => {
         storage: { ...testData.options.storage, setItem: mockSetItem },
       });
 
-      if (failurePolicy === 'error') {
-        expect(testData.options.logger.error).toHaveBeenCalledWith(
-          'Failed to write to storage for %s\n%o',
-          SAMPLE_KEY,
+      if (failurePolicy === 'error' || failurePolicy === 'warn') {
+        expect(testData.options.logger[failurePolicy]).toHaveBeenCalledWith(
+          `Failed to write to storage for ${SAMPLE_KEY}.\n%o`,
           expect.anything()
         );
       }

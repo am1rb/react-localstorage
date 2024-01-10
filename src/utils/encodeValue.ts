@@ -13,15 +13,11 @@ export function encodeValue<Schema extends z.ZodTypeAny>(
     return getEncodedValue(key, value, options);
   }
 
-  handleFailure(options.failurePolicy.schemaCheck, {
-    error: () =>
-      options.logger.error(
-        `The value\'s format does not match schema for ${key}`
-      ),
-    exception: () => {
-      throw new Error(`The value\'s format does not match schema for ${key}`);
-    },
-  });
+  handleFailure(
+    options.failurePolicy.schemaCheck,
+    options.logger,
+    `The value\'s format does not match schema for ${key}.`
+  );
 
   return null;
 }
@@ -34,13 +30,12 @@ export function getEncodedValue<Schema extends z.ZodTypeAny>(
   try {
     return serializer.encode(value);
   } catch (error) {
-    handleFailure(failurePolicy.encodeError, {
-      error: () =>
-        logger.error('Failed to encode value for %s\n%o', key, error),
-      exception: () => {
-        throw new Error(`Failed to encode value for ${key}`);
-      },
-    });
+    handleFailure(
+      failurePolicy.encodeError,
+      logger,
+      `Failed to encode value for ${key}.`,
+      error
+    );
   }
 
   return null;

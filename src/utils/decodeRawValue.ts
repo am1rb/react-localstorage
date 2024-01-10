@@ -26,17 +26,11 @@ export function decodeRawValue<Schema extends z.ZodTypeAny>(
     return schemaCheck.data;
   }
 
-  handleFailure(options.failurePolicy.schemaCheck, {
-    error: () =>
-      options.logger.error(
-        `The stored data format does not match schema for ${key}`
-      ),
-    exception: () => {
-      throw new Error(
-        `The stored data format does not match schema for ${key}`
-      );
-    },
-  });
+  handleFailure(
+    options.failurePolicy.schemaCheck,
+    options.logger,
+    `The stored data format does not match schema for ${key}.`
+  );
 
   return defaultValue;
 }
@@ -49,13 +43,12 @@ function getDecodedValue<Schema extends z.ZodTypeAny>(
   try {
     return serializer.decode(rawValue);
   } catch (error) {
-    handleFailure(failurePolicy.decodeError, {
-      error: () =>
-        logger.error('Failed to decode raw value for %s\n%o', key, error),
-      exception: () => {
-        throw new Error(`Failed to decode raw value for ${key}`);
-      },
-    });
+    handleFailure(
+      failurePolicy.decodeError,
+      logger,
+      `Failed to decode raw value for ${key}.`,
+      error
+    );
   }
 
   return undefined;

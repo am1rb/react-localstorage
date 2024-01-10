@@ -68,6 +68,7 @@ function createTestData<Schema extends z.ZodTypeAny>({
         encode,
       },
       logger: {
+        warn: jest.fn(),
         error: jest.fn(),
       },
       failurePolicy: {
@@ -76,6 +77,7 @@ function createTestData<Schema extends z.ZodTypeAny>({
         schemaCheck: failurePolicy,
         readError: failurePolicy,
         writeError: failurePolicy,
+        removeError: failurePolicy,
       },
     },
   };
