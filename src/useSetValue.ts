@@ -14,15 +14,24 @@ export function useSetValue<Schema extends z.ZodTypeAny>(
   value: z.infer<Schema> | undefined,
   options: Options<Schema>,
 ): SetValueAPI<z.infer<Schema>, z.infer<Schema>> {
+  const valueRef = React.useRef(value);
+  const optionsRef = React.useRef(options);
+
+  valueRef.current = value;
+  optionsRef.current = options;
+
   return React.useCallback(
     (newValue) => {
+      const value = valueRef.current;
+      const options = optionsRef.current;
+
       if (isFunction(newValue)) {
         setValue(key, newValue(value), options);
       } else {
         setValue(key, newValue, options);
       }
     },
-    [key], // FIXME: check dependency warnings
+    [key],
   );
 }
 

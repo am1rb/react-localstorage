@@ -53,3 +53,15 @@ it('deletes data from storage', () => {
 
   expect(localStorage.getItem(SAMPLE_KEY)).toBeNull();
 });
+
+it('receives old value in the setter function correctly', () => {
+  const { result } = renderHook(() =>
+    useLocalStorage(SAMPLE_KEY, z.number().default(10)),
+  );
+
+  act(() => result.current.setValue((oldValue) => oldValue + 1));
+  act(() => result.current.setValue((oldValue) => oldValue + 1));
+  act(() => result.current.setValue((oldValue) => oldValue + 1));
+
+  expect(result.current.value.data).toBe(13);
+});

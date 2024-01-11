@@ -8,8 +8,12 @@ export function useDecodeValue<Schema extends z.ZodTypeAny>(
   rawValue: string | null,
   options: Options<Schema>,
 ): z.infer<Schema> | undefined {
+  const optionsRef = React.useRef(options);
+
+  optionsRef.current = options;
+
   return React.useMemo(
-    () => decodeRawValue(key, rawValue, options),
-    [rawValue],
+    () => decodeRawValue(key, rawValue, optionsRef.current),
+    [key, rawValue],
   );
 }

@@ -8,8 +8,12 @@ export function useRemoveValue<Schema extends z.ZodTypeAny>(
   key: string,
   options: Options<Schema>,
 ): () => void {
+  const optionsRef = React.useRef(options);
+
+  optionsRef.current = options;
+
   return React.useCallback(() => {
-    if (removeValue(key, options)) {
+    if (removeValue(key, optionsRef.current)) {
       eventEmitter.emit(key);
     }
   }, [key]);
