@@ -1,28 +1,11 @@
 import { z } from 'zod';
-import { FailurePolicy } from './FailurePolicy';
+import { DefaultOptions } from './DefaultOptions';
 
-export interface Options<Schema extends z.ZodTypeAny> {
+export interface Options<Schema extends z.ZodTypeAny> extends DefaultOptions {
   schema: Schema;
   transformDecodedValue: (decodedValue: unknown) => z.infer<Schema>;
-  storage: {
-    getItem(key: string): string | null;
-    setItem(key: string, value: string): void;
-    removeItem(key: string): void;
-  };
   serializer: {
     decode: (value: string) => z.infer<Schema>;
     encode: (value: z.infer<Schema>) => string;
-  };
-  logger: {
-    warn: typeof console.error;
-    error: typeof console.error;
-  };
-  failurePolicy: {
-    decodeError: FailurePolicy;
-    encodeError: FailurePolicy;
-    schemaCheck: FailurePolicy;
-    readError: FailurePolicy;
-    writeError: FailurePolicy;
-    removeError: FailurePolicy;
   };
 }
