@@ -6,6 +6,7 @@
     "target": "ES5",
 
     // Output settings.
+    "charset": "utf-8",
     "newLine": "LF",
     "sourceMap": true,
 
