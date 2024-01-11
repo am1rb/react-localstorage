@@ -1,5 +1,5 @@
 import { renderHook } from '@testing-library/react';
-import { FailurePolicy } from './types/FailurePolicy';
+import type { FailurePolicy } from './types/FailurePolicy';
 import { removeValue, useRemoveValue } from './useRemoveValue';
 import { SAMPLE_KEY, getTestData } from './utils/getTestData';
 import { eventEmitter } from './utils/eventEmitter';
@@ -10,7 +10,7 @@ describe('useRemoveValue', () => {
 
     const { result, rerender } = renderHook(
       ({ key }: { key: string }) => useRemoveValue(key, testData.options),
-      { initialProps: { key: SAMPLE_KEY } }
+      { initialProps: { key: SAMPLE_KEY } },
     );
 
     const removeFunc = result.current;
@@ -33,7 +33,7 @@ describe('useRemoveValue', () => {
     const testData = getTestData();
 
     const { result } = renderHook(() =>
-      useRemoveValue(SAMPLE_KEY, testData.options)
+      useRemoveValue(SAMPLE_KEY, testData.options),
     );
 
     result.current();
@@ -54,7 +54,7 @@ describe('removeValue', () => {
       removeValue(SAMPLE_KEY, {
         ...testData.options,
         storage: { ...testData.options.storage, removeItem: mockRemoveItem },
-      })
+      }),
     ).toBeTruthy();
 
     expect(mockRemoveItem).toHaveBeenCalledWith(SAMPLE_KEY);
@@ -72,14 +72,14 @@ describe('removeValue', () => {
       removeValue(SAMPLE_KEY, {
         ...testData.options,
         storage: { ...testData.options.storage, removeItem: mockRemoveItem },
-      })
+      }),
     ).toThrowError(`Failed to remove from storage for ${SAMPLE_KEY}`);
   });
 
   it('logs an error or ignores the action when storage gets failed and failure policy is not exception', () => {
     const failurePolicies: FailurePolicy[] = ['ignore', 'error', 'warn'];
 
-    failurePolicies.forEach(failurePolicy => {
+    failurePolicies.forEach((failurePolicy) => {
       const mockRemoveItem = jest.fn(() => {
         throw new Error();
       });
@@ -90,13 +90,13 @@ describe('removeValue', () => {
         removeValue(SAMPLE_KEY, {
           ...testData.options,
           storage: { ...testData.options.storage, removeItem: mockRemoveItem },
-        })
+        }),
       ).toBeFalsy();
 
       if (failurePolicy === 'error' || failurePolicy === 'warn') {
         expect(testData.options.logger[failurePolicy]).toHaveBeenCalledWith(
           `Failed to remove from storage for ${SAMPLE_KEY}.\n%o`,
-          expect.anything()
+          expect.anything(),
         );
       }
     });

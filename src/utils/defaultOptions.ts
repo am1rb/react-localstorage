@@ -1,8 +1,8 @@
-import { DefaultOptions } from '../types/DefaultOptions';
+import type { DefaultOptions } from '../types/DefaultOptions';
 
-export const defaultOptions = (function() {
+export const defaultOptions = (function () {
   const initial: DefaultOptions = {
-    transformDecodedValue: value => value,
+    transformDecodedValue: (value) => value,
     serializer: {
       decode: JSON.parse,
       encode: JSON.stringify,

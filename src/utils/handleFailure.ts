@@ -1,12 +1,12 @@
 import { z } from 'zod';
-import { FailurePolicy } from '../types/FailurePolicy';
-import { Options } from '../types/Options';
+import type { FailurePolicy } from '../types/FailurePolicy';
+import type { Options } from '../types/Options';
 
 export function handleFailure(
   policy: FailurePolicy,
   logger: Options<z.ZodTypeAny>['logger'],
   message: string,
-  error?: unknown
+  error?: unknown,
 ): void {
   if (policy === 'ignore') {
     return;

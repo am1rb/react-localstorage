@@ -14,7 +14,7 @@ export const eventEmitter = {
       return;
     }
 
-    const newList = list.filter(item => item !== callback);
+    const newList = list.filter((item) => item !== callback);
 
     if (newList.length > 0) {
       registry.set(key, newList);
@@ -24,7 +24,7 @@ export const eventEmitter = {
   },
   emit(key: string) {
     const event = new StorageEvent('storage', { key });
-    registry.get(key)?.forEach(item => item(event));
+    registry.get(key)?.forEach((item) => item(event));
   },
   clear() {
     registry.clear();

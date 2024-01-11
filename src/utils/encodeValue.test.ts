@@ -1,6 +1,6 @@
 import { SAMPLE_KEY, getTestData } from './getTestData';
 import { encodeValue, getEncodedValue } from './encodeValue';
-import { FailurePolicy } from '../types/FailurePolicy';
+import type { FailurePolicy } from '../types/FailurePolicy';
 
 describe('encodeValue', () => {
   it('raises an exception if the value format does not match and failure policy is exception', () => {
@@ -9,25 +9,23 @@ describe('encodeValue', () => {
     expect.hasAssertions();
 
     expect(() =>
-      encodeValue(SAMPLE_KEY, undefined as any, testData.options)
-    ).toThrowError(
-      `The value\'s format does not match schema for ${SAMPLE_KEY}`
-    );
+      encodeValue(SAMPLE_KEY, undefined as never, testData.options),
+    ).toThrow(`The value's format does not match schema for ${SAMPLE_KEY}`);
   });
 
   it('returns null if the value format does not match and failure policy is not exception', () => {
     const failurePolicies: FailurePolicy[] = ['error', 'ignore', 'warn'];
 
-    failurePolicies.forEach(failurePolicy => {
+    failurePolicies.forEach((failurePolicy) => {
       const testData = getTestData({ failurePolicy });
 
       expect(
-        encodeValue(SAMPLE_KEY, undefined as any, testData.options)
+        encodeValue(SAMPLE_KEY, undefined as never, testData.options),
       ).toBeNull();
 
       if (failurePolicy === 'error' || failurePolicy === 'warn') {
         expect(testData.options.logger[failurePolicy]).toHaveBeenCalledWith(
-          `The value\'s format does not match schema for ${SAMPLE_KEY}.`
+          `The value's format does not match schema for ${SAMPLE_KEY}.`,
         );
       }
     });
@@ -47,7 +45,7 @@ describe('getEncodedValue', () => {
           ...testData.options.serializer,
           encode: mockEncoder,
         },
-      })
+      }),
     ).toBe(testData.storedValue.ok);
 
     expect(mockEncoder).toHaveBeenCalledWith(testData.value);
@@ -68,14 +66,14 @@ describe('getEncodedValue', () => {
           ...testData.options.serializer,
           encode: mockEncoder,
         },
-      })
+      }),
     ).toThrowError(`Failed to encode value for ${SAMPLE_KEY}`);
   });
 
   it('returns null when encoder gets failed and failure policy is not exception', () => {
     const failurePolicies: FailurePolicy[] = ['ignore', 'error', 'warn'];
 
-    failurePolicies.forEach(failurePolicy => {
+    failurePolicies.forEach((failurePolicy) => {
       const mockEncoder = jest.fn(() => {
         throw new Error();
       });
@@ -89,13 +87,13 @@ describe('getEncodedValue', () => {
             ...testData.options.serializer,
             encode: mockEncoder,
           },
-        })
+        }),
       ).toBeNull();
 
       if (failurePolicy === 'error' || failurePolicy === 'warn') {
         expect(testData.options.logger[failurePolicy]).toHaveBeenCalledWith(
           `Failed to encode value for ${SAMPLE_KEY}.\n%o`,
-          expect.anything()
+          expect.anything(),
         );
       }
     });

@@ -7,13 +7,7 @@ afterEach(() => localStorage.clear());
 
 it('should support nullable values', () => {
   const { result } = renderHook(() =>
-    useLocalStorage(
-      SAMPLE_KEY,
-      z
-        .number()
-        .nullable()
-        .default(null)
-    )
+    useLocalStorage(SAMPLE_KEY, z.number().nullable().default(null)),
   );
 
   expect(result.current.value).toEqual({ isReady: true, data: null });
@@ -21,7 +15,7 @@ it('should support nullable values', () => {
 
 it('returns default value when data is not available in storage', () => {
   const { result } = renderHook(() =>
-    useLocalStorage(SAMPLE_KEY, z.number().default(10))
+    useLocalStorage(SAMPLE_KEY, z.number().default(10)),
   );
 
   expect(result.current.value).toEqual({ isReady: true, data: 10 });

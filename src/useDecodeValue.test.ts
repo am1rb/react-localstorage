@@ -9,7 +9,7 @@ describe('useDecodeValue', () => {
     const { result, rerender } = renderHook(
       ({ rawValue }: { rawValue: string | null }) =>
         useDecodeValue(SAMPLE_KEY, rawValue, testData.options),
-      { initialProps: { rawValue: testData.storedValue.ok } }
+      { initialProps: { rawValue: testData.storedValue.ok } },
     );
 
     const initialDecodedValue = result.current;

@@ -1,7 +1,7 @@
 import { z } from 'zod';
 
 export function getDefaultValue<Schema extends z.ZodTypeAny>(
-  schema: Schema
+  schema: Schema,
 ): z.infer<Schema> | undefined {
   if (isInstanceOfZodDefault(schema)) {
     return schema._def.defaultValue();
@@ -11,7 +11,7 @@ export function getDefaultValue<Schema extends z.ZodTypeAny>(
 }
 
 function isInstanceOfZodDefault(
-  schema: unknown
+  schema: unknown,
 ): schema is z.ZodDefault<z.ZodTypeAny> {
   return typeof (schema as z.ZodTypeAny)._def.defaultValue === 'function';
 }

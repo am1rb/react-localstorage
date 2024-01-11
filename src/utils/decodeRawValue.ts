@@ -1,12 +1,12 @@
 import { z } from 'zod';
-import { Options } from '../types/Options';
+import type { Options } from '../types/Options';
 import { handleFailure } from './handleFailure';
 import { getDefaultValue } from './getDefaultValue';
 
 export function decodeRawValue<Schema extends z.ZodTypeAny>(
   key: string,
   rawValue: string | null,
-  options: Options<Schema>
+  options: Options<Schema>,
 ): z.infer<Schema> | undefined {
   const defaultValue = getDefaultValue(options.schema);
 
@@ -29,7 +29,7 @@ export function decodeRawValue<Schema extends z.ZodTypeAny>(
   handleFailure(
     options.failurePolicy.schemaCheck,
     options.logger,
-    `The stored data format does not match schema for ${key}.`
+    `The stored data format does not match schema for ${key}.`,
   );
 
   return defaultValue;
@@ -38,7 +38,7 @@ export function decodeRawValue<Schema extends z.ZodTypeAny>(
 function getDecodedValue<Schema extends z.ZodTypeAny>(
   key: string,
   rawValue: string,
-  { serializer, failurePolicy, logger }: Options<Schema>
+  { serializer, failurePolicy, logger }: Options<Schema>,
 ): z.infer<Schema> | undefined {
   try {
     return serializer.decode(rawValue);
@@ -47,7 +47,7 @@ function getDecodedValue<Schema extends z.ZodTypeAny>(
       failurePolicy.decodeError,
       logger,
       `Failed to decode raw value for ${key}.`,
-      error
+      error,
     );
   }
 

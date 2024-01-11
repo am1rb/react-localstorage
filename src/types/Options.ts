@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { DefaultOptions } from './DefaultOptions';
+import type { DefaultOptions } from './DefaultOptions';
 
 export interface Options<Schema extends z.ZodTypeAny> extends DefaultOptions {
   schema: Schema;

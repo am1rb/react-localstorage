@@ -1,12 +1,12 @@
 import * as React from 'react';
 import { z } from 'zod';
-import { Options } from './types/Options';
+import type { Options } from './types/Options';
 import { handleFailure } from './utils/handleFailure';
 import { eventEmitter } from './utils/eventEmitter';
 
 export function useRemoveValue<Schema extends z.ZodTypeAny>(
   key: string,
-  options: Options<Schema>
+  options: Options<Schema>,
 ): () => void {
   return React.useCallback(() => {
     if (removeValue(key, options)) {
@@ -17,7 +17,7 @@ export function useRemoveValue<Schema extends z.ZodTypeAny>(
 
 export function removeValue<Schema extends z.ZodTypeAny>(
   key: string,
-  { storage, logger, failurePolicy }: Options<Schema>
+  { storage, logger, failurePolicy }: Options<Schema>,
 ): boolean {
   try {
     storage.removeItem(key);
@@ -27,7 +27,7 @@ export function removeValue<Schema extends z.ZodTypeAny>(
       failurePolicy.removeError,
       logger,
       `Failed to remove from storage for ${key}.`,
-      error
+      error,
     );
   }
 

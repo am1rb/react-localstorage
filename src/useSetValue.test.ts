@@ -10,7 +10,7 @@ describe('useSetValue', () => {
     const { result, rerender } = renderHook(
       ({ key }: { key: string }) =>
         useSetValue(key, testData.value, testData.options),
-      { initialProps: { key: SAMPLE_KEY } }
+      { initialProps: { key: SAMPLE_KEY } },
     );
 
     const setter = result.current;
@@ -33,7 +33,7 @@ describe('useSetValue', () => {
       useSetValue(SAMPLE_KEY, testData.value, {
         ...testData.options,
         storage: { ...testData.options.storage, setItem: mockSetItem },
-      })
+      }),
     );
 
     const newValue = { id: 20, label: 'John' };
@@ -41,7 +41,7 @@ describe('useSetValue', () => {
 
     expect(mockSetItem).toHaveBeenCalledWith(
       SAMPLE_KEY,
-      testData.options.serializer.encode(newValue)
+      testData.options.serializer.encode(newValue),
     );
   });
 
@@ -53,10 +53,10 @@ describe('useSetValue', () => {
       useSetValue(SAMPLE_KEY, testData.value, {
         ...testData.options,
         storage: { ...testData.options.storage, setItem: mockSetItem },
-      })
+      }),
     );
 
-    result.current(oldValue => ({
+    result.current((oldValue) => ({
       ...oldValue,
       id: oldValue.id + 1,
       label: 'NEW LABEL',
@@ -67,7 +67,7 @@ describe('useSetValue', () => {
       testData.options.serializer.encode({
         id: testData.value.id + 1,
         label: 'NEW LABEL',
-      })
+      }),
     );
   });
 });
@@ -84,7 +84,7 @@ describe('setValue', () => {
 
     expect(mockSetItem).toHaveBeenCalledWith(
       SAMPLE_KEY,
-      testData.storedValue.ok
+      testData.storedValue.ok,
     );
   });
 
@@ -119,7 +119,7 @@ describe('setValue', () => {
     const testData = getTestData({ failurePolicy: 'error' });
 
     const mockSetItem = jest.fn();
-    setValue(SAMPLE_KEY, undefined as any, {
+    setValue(SAMPLE_KEY, undefined as never, {
       ...testData.options,
       storage: { ...testData.options.storage, setItem: mockSetItem },
     });

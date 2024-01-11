@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { z } from 'zod';
-import { Options } from './types/Options';
+import type { Options } from './types/Options';
 import { eventEmitter } from './utils/eventEmitter';
 import { safeReadValue } from './utils/safeReadValue';
 
@@ -16,7 +16,7 @@ type GetValue =
 
 export function useGetValue<Schema extends z.ZodTypeAny>(
   key: string,
-  options: Options<Schema>
+  options: Options<Schema>,
 ): GetValue {
   const subscribe = React.useCallback(
     (onChange: () => void) => {
@@ -33,13 +33,13 @@ export function useGetValue<Schema extends z.ZodTypeAny>(
         eventEmitter.off(key, handleStorageEvent);
       };
     },
-    [key]
+    [key],
   );
 
   const value = React.useSyncExternalStore<string | null | undefined>(
     subscribe,
     () => safeReadValue(key, options),
-    () => undefined
+    () => undefined,
   );
 
   if (value === undefined) {

@@ -14,7 +14,7 @@ it('calls the error action', () => {
       error: mockError,
     },
     sampleError,
-    new Error()
+    new Error(),
   );
 
   expect(mockError).toHaveBeenCalled();
@@ -31,7 +31,7 @@ it('logs a warning', () => {
       warn: mockWarn,
     },
     sampleError,
-    new Error()
+    new Error(),
   );
 
   expect(mockWarn).toHaveBeenCalled();
@@ -50,7 +50,7 @@ it('should not call error, warn, or exception when it goes for ignore', () => {
       error: mockError,
     },
     sampleError,
-    new Error()
+    new Error(),
   );
 
   expect(mockError).not.toHaveBeenCalled();
@@ -67,7 +67,7 @@ it('be able to run the exception action', () => {
       'exception',
       testData.options.logger,
       sampleError,
-      new Error()
-    )
+      new Error(),
+    ),
   ).toThrowError('Sample Error');
 });

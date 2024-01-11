@@ -12,7 +12,7 @@ describe('useGetValue', () => {
     const testData = getTestData();
 
     const { result } = renderHook(() =>
-      useGetValue(SAMPLE_KEY, testData.options)
+      useGetValue(SAMPLE_KEY, testData.options),
     );
 
     expect(result.current).toEqual({ isReady: false, value: null });
@@ -27,7 +27,7 @@ describe('useGetValue', () => {
       useGetValue(SAMPLE_KEY, {
         ...testData.options,
         storage: { ...testData.options.storage, getItem: mockGetItem },
-      })
+      }),
     );
 
     expect(result.current).toEqual({ isReady: true, value: null });
@@ -35,7 +35,7 @@ describe('useGetValue', () => {
     mockGetItem.mockReturnValue(testData.storedValue.ok);
 
     act(() =>
-      window.dispatchEvent(new StorageEvent('storage', { key: SAMPLE_KEY }))
+      window.dispatchEvent(new StorageEvent('storage', { key: SAMPLE_KEY })),
     );
 
     expect(result.current).toEqual({
@@ -53,7 +53,7 @@ describe('useGetValue', () => {
       useGetValue(SAMPLE_KEY, {
         ...testData.options,
         storage: { ...testData.options.storage, getItem: mockGetItem },
-      })
+      }),
     );
 
     expect(eventEmitter.size()).toBe(1);

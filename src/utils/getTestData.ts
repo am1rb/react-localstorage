@@ -1,6 +1,6 @@
 import { z } from 'zod';
-import { Options } from '../types/Options';
-import { FailurePolicy } from '../types/FailurePolicy';
+import type { Options } from '../types/Options';
+import type { FailurePolicy } from '../types/FailurePolicy';
 import { getDefaultValue } from './getDefaultValue';
 
 export const SAMPLE_KEY = 'sample-key';
@@ -57,7 +57,7 @@ function createTestData<Schema extends z.ZodTypeAny>({
     },
     options: {
       schema,
-      transformDecodedValue: value => value,
+      transformDecodedValue: (value) => value,
       storage: {
         getItem: jest.fn(() => null),
         setItem: jest.fn(() => {}),

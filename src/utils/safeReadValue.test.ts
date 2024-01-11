@@ -1,4 +1,4 @@
-import { FailurePolicy } from '../types/FailurePolicy';
+import type { FailurePolicy } from '../types/FailurePolicy';
 import { SAMPLE_KEY, getTestData } from './getTestData';
 import { readValue, safeReadValue } from './safeReadValue';
 
@@ -13,18 +13,18 @@ describe('safeReadValue', () => {
         ...testData.options,
         storage: {
           ...testData.options.storage,
-          getItem: () => undefined as any,
+          getItem: () => undefined as never,
         },
-      })
+      }),
     ).toThrowError(
-      `The storage.getItem must return a string or null; but returned undefined for ${SAMPLE_KEY}.`
+      `The storage.getItem must return a string or null; but returned undefined for ${SAMPLE_KEY}.`,
     );
   });
 
   it('returns null if storage.getItem returns invalid data type and failure policy is not exception', () => {
     const failurePolicies: FailurePolicy[] = ['error', 'ignore', 'warn'];
 
-    failurePolicies.forEach(failurePolicy => {
+    failurePolicies.forEach((failurePolicy) => {
       const testData = getTestData({ failurePolicy });
 
       expect(
@@ -32,14 +32,14 @@ describe('safeReadValue', () => {
           ...testData.options,
           storage: {
             ...testData.options.storage,
-            getItem: () => undefined as any,
+            getItem: () => undefined as never,
           },
-        })
+        }),
       ).toBeNull();
 
       if (failurePolicy === 'error' || failurePolicy === 'warn') {
         expect(testData.options.logger[failurePolicy]).toHaveBeenCalledWith(
-          `The storage.getItem must return a string or null; but returned undefined for ${SAMPLE_KEY}.`
+          `The storage.getItem must return a string or null; but returned undefined for ${SAMPLE_KEY}.`,
         );
       }
     });
@@ -57,7 +57,7 @@ describe('readValue', () => {
       readValue(SAMPLE_KEY, {
         ...testData.options,
         storage: { ...testData.options.storage, getItem: mockGetItem },
-      })
+      }),
     ).toBe(storedData);
     expect(mockGetItem).toHaveBeenCalledWith(SAMPLE_KEY);
   });
@@ -74,14 +74,14 @@ describe('readValue', () => {
       readValue(SAMPLE_KEY, {
         ...testData.options,
         storage: { ...testData.options.storage, getItem: mockGetItem },
-      })
+      }),
     ).toThrowError(`Failed to read from storage for ${SAMPLE_KEY}.`);
   });
 
   it('returns null when storage gets failed and failure policy is not exception', () => {
     const failurePolicies: FailurePolicy[] = ['ignore', 'error', 'warn'];
 
-    failurePolicies.forEach(failurePolicy => {
+    failurePolicies.forEach((failurePolicy) => {
       const mockGetItem = jest.fn(() => {
         throw new Error();
       });
@@ -92,13 +92,13 @@ describe('readValue', () => {
         readValue(SAMPLE_KEY, {
           ...testData.options,
           storage: { ...testData.options.storage, getItem: mockGetItem },
-        })
+        }),
       ).toBeNull();
 
       if (failurePolicy === 'error' || failurePolicy === 'warn') {
         expect(testData.options.logger[failurePolicy]).toHaveBeenCalledWith(
           `Failed to read from storage for ${SAMPLE_KEY}.\n%o`,
-          expect.anything()
+          expect.anything(),
         );
       }
     });

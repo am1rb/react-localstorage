@@ -1,4 +1,4 @@
-import { FailurePolicy } from './FailurePolicy';
+import type { FailurePolicy } from './FailurePolicy';
 
 export interface DefaultOptions {
   storage: {
