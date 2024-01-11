@@ -20,20 +20,19 @@ interface LocalStorageActions<GetValue, SetValue, OldValue> {
   removeValue(): void;
 }
 
-type LocalStorageReturn<
-  Schema extends z.ZodTypeAny
-> = Schema extends z.ZodDefault<z.ZodTypeAny>
-  ? LocalStorageActions<z.infer<Schema>, z.infer<Schema>, z.infer<Schema>>
-  : LocalStorageActions<
-      z.infer<Schema> | undefined,
-      z.infer<Schema>,
-      z.infer<Schema> | undefined
-    >;
+type LocalStorageReturn<Schema extends z.ZodTypeAny> =
+  Schema extends z.ZodDefault<z.ZodTypeAny>
+    ? LocalStorageActions<z.infer<Schema>, z.infer<Schema>, z.infer<Schema>>
+    : LocalStorageActions<
+        z.infer<Schema> | undefined,
+        z.infer<Schema>,
+        z.infer<Schema> | undefined
+      >;
 
 export function useLocalStorage<Schema extends z.ZodTypeAny>(
   key: string,
   schema: Schema,
-  options: Partial<Omit<Options<z.infer<Schema>>, 'schema'>> = {}
+  options: Partial<Omit<Options<z.infer<Schema>>, 'schema'>> = {},
 ): LocalStorageReturn<Schema> {
   const extendedOptions: Options<z.infer<Schema>> = {
     ...defaultOptions.get(),
