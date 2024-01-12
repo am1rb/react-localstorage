@@ -1,4 +1,4 @@
-import { DefaultOptions } from '../types/DefaultOptions';
+import { type DefaultOptions } from '../types/DefaultOptions';
 import { defaultOptions } from './defaultOptions';
 
 const initialOptions = defaultOptions.get();
