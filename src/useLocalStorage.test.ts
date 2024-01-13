@@ -65,3 +65,17 @@ it('receives old value in the setter function correctly', () => {
 
   expect(result.current.value.data).toBe(13);
 });
+
+it('should support undefined as value', () => {
+  const { result } = renderHook(() =>
+    useLocalStorage(SAMPLE_KEY, z.number().optional()),
+  );
+
+  expect(result.current.value.data).toBeUndefined();
+
+  act(() => result.current.setValue(20));
+  expect(result.current.value.data).toBe(20);
+
+  act(() => result.current.setValue(undefined));
+  expect(result.current.value.data).toBeUndefined();
+});

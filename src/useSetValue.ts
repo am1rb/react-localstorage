@@ -4,6 +4,7 @@ import type { Options } from './types/Options';
 import { safeWriteValue } from './utils/safeWriteValue';
 import { encodeValue } from './utils/encodeValue';
 import { eventEmitter } from './utils/eventEmitter';
+import { removeValue } from './utils/removeValue';
 
 type SetValueAPI<SetValue, OldValue> = (
   newValue: SetValue | ((oldValue: OldValue) => SetValue),
@@ -46,7 +47,12 @@ export function setValue<Schema extends z.ZodTypeAny>(
     return;
   }
 
-  safeWriteValue(key, encodedValue, options);
+  if (encodedValue !== undefined) {
+    safeWriteValue(key, encodedValue, options);
+  } else {
+    removeValue(key, options);
+  }
+
   eventEmitter.emit(key);
 }
 
