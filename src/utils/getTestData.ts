@@ -57,7 +57,10 @@ function createTestData<Schema extends z.ZodTypeAny>({
     },
     options: {
       schema,
-      transformDecodedValue: (value) => value,
+      transform: {
+        storedValue: (value) => value,
+        decodedValue: (value) => value,
+      },
       storage: {
         getItem: jest.fn(() => null),
         setItem: jest.fn(() => {}),

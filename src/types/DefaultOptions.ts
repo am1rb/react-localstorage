@@ -1,20 +1,20 @@
 import type { FailurePolicy } from './FailurePolicy';
+import type { StorageAPI } from './StorageAPI';
 
-export interface DefaultOptions {
-  storage: {
-    getItem(key: string): string | null;
-    setItem(key: string, value: string): void;
-    removeItem(key: string): void;
+export interface DefaultOptions<Value = unknown> {
+  storage: StorageAPI;
+  transform: {
+    storedValue(value: string): string,
+    decodedValue(decodedValue: unknown): Value
   };
-  transformDecodedValue: (decodedValue: unknown) => unknown;
   serializer: {
-    decode: (value: string) => unknown;
-    encode: (value: unknown) => string;
+    decode: (value: string) => Value;
+    encode: (value: Value) => string;
   };
   logger: {
     warn: typeof console.error;
     error: typeof console.error;
-  };
+  }
   failurePolicy: {
     decodeError: FailurePolicy;
     encodeError: FailurePolicy;
@@ -22,5 +22,5 @@ export interface DefaultOptions {
     readError: FailurePolicy;
     writeError: FailurePolicy;
     removeError: FailurePolicy;
-  };
+  }
 }

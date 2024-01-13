@@ -19,7 +19,7 @@ export function decodeRawValue<Schema extends z.ZodTypeAny>(
     return defaultValue;
   }
 
-  const transformedValue = options.transformDecodedValue(decodedValue);
+  const transformedValue = options.transform.decodedValue(decodedValue);
   const schemaCheck = options.schema.safeParse(transformedValue);
 
   if (schemaCheck.success) {

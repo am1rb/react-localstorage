@@ -9,7 +9,10 @@ afterEach(() => {
 
 it('sets new value as default options', () => {
   const newUpdate: DefaultOptions = {
-    transformDecodedValue: jest.fn(),
+    transform: {
+      storedValue: jest.fn(),
+      decodedValue: jest.fn(),
+    },
     serializer: {
       decode: jest.fn(),
       encode: jest.fn(),
@@ -40,7 +43,10 @@ it('sets new value as default options', () => {
 
 it('resets options to default value', () => {
   const newUpdate: Partial<DefaultOptions> = {
-    transformDecodedValue: jest.fn(),
+    transform: {
+      storedValue: jest.fn(),
+      decodedValue: jest.fn(),
+    },
   };
   defaultOptions.set(newUpdate);
 
@@ -53,7 +59,10 @@ it('resets options to default value', () => {
 
 it('updates default settings partially', () => {
   const newUpdate: Partial<DefaultOptions> = {
-    transformDecodedValue: jest.fn(),
+    transform: {
+      storedValue: jest.fn(),
+      decodedValue: jest.fn(),
+    },
   };
 
   defaultOptions.set(newUpdate);

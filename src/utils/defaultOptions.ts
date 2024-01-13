@@ -1,13 +1,17 @@
 import type { DefaultOptions } from '../types/DefaultOptions';
+import { localStorageWithFallback } from './localStorageWithFallback';
 
 export const defaultOptions = (function () {
   const initial: DefaultOptions = {
-    transformDecodedValue: (value) => value,
+    transform: {
+      storedValue: (value) => value,
+      decodedValue: (value) => value,
+    },
     serializer: {
       decode: JSON.parse,
       encode: JSON.stringify,
     },
-    storage: localStorage,
+    storage: localStorageWithFallback,
     logger: console,
     failurePolicy: {
       decodeError: 'exception',

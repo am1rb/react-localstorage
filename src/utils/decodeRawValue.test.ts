@@ -121,7 +121,7 @@ it('throws an exception if schema does not match and failure policy is exception
   );
 });
 
-it('calls transformDecodedValue to have the chance to migrate data before running schema check', () => {
+it('calls transform.decodedValue to have the chance to migrate data before running schema check', () => {
   const testData = getTestData({ failurePolicy: 'exception' });
 
   const migrateData = (
@@ -134,6 +134,9 @@ it('calls transformDecodedValue to have the chance to migrate data before runnin
 
   decodeRawValue(SAMPLE_KEY, testData.storedValue.schemaIncompatible, {
     ...testData.options,
-    transformDecodedValue: migrateData,
+    transform: {
+      storedValue: (value) => value,
+      decodedValue: migrateData,
+    },
   });
 });
