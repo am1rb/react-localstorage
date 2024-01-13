@@ -22,11 +22,16 @@ describe('useGetValue', () => {
     const testData = getTestData();
 
     const mockGetItem = jest.fn<string | null, never>(() => null);
+    const mockRefresh = jest.fn();
 
     const { result } = renderHook(() =>
       useGetValue(SAMPLE_KEY, {
         ...testData.options,
-        storage: { ...testData.options.storage, getItem: mockGetItem },
+        storage: {
+          ...testData.options.storage,
+          getItem: mockGetItem,
+          refresh: mockRefresh,
+        },
       }),
     );
 
@@ -42,6 +47,38 @@ describe('useGetValue', () => {
       isReady: true,
       value: testData.storedValue.ok,
     });
+
+    expect(mockRefresh).toHaveBeenCalled();
+  });
+
+  it("ignores storage events if the event's key is different", () => {
+    const testData = getTestData();
+
+    const mockGetItem = jest.fn<string | null, never>(() => null);
+    const mockRefresh = jest.fn();
+
+    const { result } = renderHook(() =>
+      useGetValue(SAMPLE_KEY, {
+        ...testData.options,
+        storage: {
+          ...testData.options.storage,
+          getItem: mockGetItem,
+          refresh: mockRefresh,
+        },
+      }),
+    );
+
+    expect(result.current).toEqual({ isReady: true, value: null });
+
+    mockGetItem.mockReturnValue(testData.storedValue.ok);
+
+    act(() =>
+      window.dispatchEvent(new StorageEvent('storage', { key: 'Another key' })),
+    );
+
+    expect(result.current).toEqual({ isReady: true, value: null });
+
+    expect(mockRefresh).not.toHaveBeenCalled();
   });
 
   it('sets up an event handler in eventEmitter', () => {

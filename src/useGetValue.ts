@@ -18,10 +18,15 @@ export function useGetValue<Schema extends z.ZodTypeAny>(
   key: string,
   options: Options<Schema>,
 ): GetValue {
+  const optionsRef = React.useRef(options);
+
+  optionsRef.current = options;
+
   const subscribe = React.useCallback(
     (onChange: () => void) => {
       const handleStorageEvent = (event: StorageEvent) => {
         if (event.key === key) {
+          optionsRef.current.storage.refresh?.(key);
           onChange();
         }
       };
