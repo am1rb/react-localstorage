@@ -14,13 +14,15 @@ export function decodeRawValue<Schema extends z.ZodTypeAny>(
     return defaultValue;
   }
 
-  const decodedValue = getDecodedValue(key, rawValue, options);
+  const transformedRawValue = options.transform.storedValue(rawValue);
+  const decodedValue = getDecodedValue(key, transformedRawValue, options);
+
   if (decodedValue === undefined) {
     return defaultValue;
   }
 
-  const transformedValue = options.transform.decodedValue(decodedValue);
-  const schemaCheck = options.schema.safeParse(transformedValue);
+  const transformedDecodedValue = options.transform.decodedValue(decodedValue);
+  const schemaCheck = options.schema.safeParse(transformedDecodedValue);
 
   if (schemaCheck.success) {
     return schemaCheck.data;
